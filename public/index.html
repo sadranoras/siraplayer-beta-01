@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+
+<html lang="fa" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Streamly Player</title>
+
+    <link rel="stylesheet" href="style.css">
+
+</head>
+
+<body>
+
+    <header>
+        <div class="logo">STREAMLY</div>
+    </header>
+
+    <main>
+
+        <section class="hero">
+
+            <h1>پخش ویدیو</h1>
+
+            <p>
+                لینک مستقیم ویدیو را وارد کنید
+            </p>
+
+            <div class="input-box">
+
+                <input id="videoUrl" type="text" placeholder="https://example.com/video.mp4">
+
+                <button id="loadBtn">
+                    بارگذاری
+                </button>
+
+            </div>
+
+        </section>
+
+
+        <section class="player-section">
+
+            <div class="video-container">
+
+                <video id="video" playsinline preload="metadata"></video>
+
+
+                <!-- کنترل‌های پلیر -->
+
+                <div class="player-controls">
+
+
+                    <!-- نوار زمان -->
+
+                    <div class="progress-container">
+
+                        <input id="progress" type="range" min="0" max="100" value="0" step="0.1">
+
+                    </div>
+
+
+                    <!-- اطلاعات زمان -->
+
+                    <div class="time-row">
+
+                        <span id="currentTime">
+                            00:00
+                        </span>
+
+                        <span>/</span>
+
+                        <span id="duration">
+                            00:00
+                        </span>
+
+                    </div>
+
+
+                    <!-- دکمه‌های اصلی -->
+
+                    <div class="buttons-row">
+
+
+                        <!-- عقب -->
+
+                        <button id="backBtn" class="control-btn" title="۵ ثانیه عقب">
+                            ⏪
+                        </button>
+
+
+                        <!-- پخش -->
+
+                        <button id="playBtn" class="control-btn play-btn" title="پخش / توقف">
+                            ▶
+                        </button>
+
+
+                        <!-- جلو -->
+
+                        <button id="forwardBtn" class="control-btn" title="۵ ثانیه جلو">
+                            ⏩
+                        </button>
+
+
+                        <!-- صدا -->
+
+                        <button id="muteBtn" class="control-btn" title="صدا">
+                            🔊
+                        </button>
+
+
+                        <input id="volume" class="volume-slider" type="range" min="0" max="1" step="0.01" value="1" />
+
+
+                        <!-- کیفیت -->
+
+                        <select id="quality" class="quality-select">
+
+                            <option value="auto">
+                                کیفیت
+                            </option>
+
+                            <option value="360">
+                                360p
+                            </option>
+
+                            <option value="720">
+                                720p
+                            </option>
+
+                            <option value="1080">
+                                1080p
+                            </option>
+
+                        </select>
+
+                        <select id="speed" class="quality-select">
+                            <option value="0.5">0.5x</option>
+                            <option value="0.75">0.75x</option>
+                            <option value="1" selected>1x</option>
+                            <option value="1.25">1.25x</option>
+                            <option value="1.5">1.5x</option>
+                            <option value="1.75">1.75x</option>
+                            <option value="2">2x</option>
+                        </select>
+
+
+                        <!-- زیرنویس -->
+
+                        <button id="subtitleBtn" class="control-btn" title="زیرنویس">
+                            CC
+                        </button>
+
+
+                        <!-- روشنایی -->
+
+                        <button id="brightnessBtn" class="control-btn" title="روشنایی">
+                            ☀
+                        </button>
+
+
+                        <!-- تمام صفحه -->
+
+                        <button id="fullscreenBtn" class="control-btn" title="تمام صفحه">
+                            ⛶
+                        </button>
+
+                    </div>
+
+
+                    <!-- پنل روشنایی -->
+
+                    <div id="brightnessPanel" class="brightness-panel">
+
+                        <span>
+                            روشنایی
+                        </span>
+
+                        <input id="brightness" type="range" min="50" max="150" value="100">
+
+                        <span id="brightnessValue">
+                            100%
+                        </span>
+
+                    </div>
+
+
+                    <!-- وضعیت -->
+
+                    <div id="status" class="status">
+                        آماده پخش
+                    </div>
+
+                </div>
+
+            </div>
+
+        </section>
+
+    </main>
+
+    <script src="app.js"></script>
+
+</body>
+
+</html>
