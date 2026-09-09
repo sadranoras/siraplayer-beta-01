@@ -1,704 +1,399 @@
-/* =========================
-   RESET
-========================= */
-
 * {
     box-sizing: border-box;
-    margin: 0;
-    padding: 0;
 }
 
 html,
 body {
     width: 100%;
-    min-height: 100%;
+    max-width: 100%;
     overflow-x: hidden;
 }
 
 body {
-    font-family: Arial, Helvetica, sans-serif;
-    background: #111;
-    color: #fff;
+    margin: 0;
+    background: #080808;
+    color: white;
+    font-family: Arial, sans-serif;
 }
 
+header {
+    height: 70px;
+    display: flex;
+    align-items: center;
+    padding: 0 30px;
+    background: #111;
+    border-bottom: 1px solid #222;
+}
 
-/* =========================
-   MAIN
-========================= */
+.logo {
+    font-size: 22px;
+    font-weight: bold;
+    letter-spacing: 2px;
+}
 
 main {
     width: 100%;
     max-width: 100%;
-    padding: 20px;
+    margin: 0 auto;
+    padding: 40px 15px;
 }
 
-
-/* =========================
-   TITLE
-========================= */
-
-h1 {
-    margin-bottom: 20px;
-    text-align: center;
-    font-size: 28px;
-}
-
-
-/* =========================
-   URL INPUT AREA
-========================= */
-
-.url-box {
-    display: flex;
+.player-section {
     width: 100%;
-    max-width: 1000px;
-    margin: 0 auto 20px;
-    gap: 10px;
+    max-width: 100%;
 }
 
-.url-box input {
+.video-container {
+    position: relative;
+    width: 100%;
+    max-width: 100%;
+    margin: 0 auto;
+    background: #000;
+    border-radius: 14px;
+    overflow: hidden;
+}
+
+video {
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    height: auto;
+    background: #000;
+}
+
+@media (max-width: 600px) {
+
+    body {
+        overflow-x: hidden;
+    }
+
+    main {
+        width: 100%;
+        padding: 20px 10px;
+    }
+
+    .video-container {
+        width: 100%;
+        border-radius: 8px;
+    }
+
+    video {
+        width: 100%;
+        height: auto;
+    }
+}
+
+.hero {
+    text-align: center;
+    margin-bottom: 35px;
+}
+
+.hero h1 {
+    font-size: 42px;
+    margin-bottom: 10px;
+}
+
+.hero p {
+    color: #888;
+}
+
+.input-box {
+    display: flex;
+    gap: 10px;
+    max-width: 800px;
+    margin: 30px auto;
+}
+
+.input-box input {
     flex: 1;
-    min-width: 0;
-    height: 44px;
-    padding: 0 14px;
-
+    padding: 17px;
+    border-radius: 10px;
     border: 1px solid #333;
-    border-radius: 8px;
-
-    background: #1c1c1c;
-    color: #fff;
-
-    font-size: 14px;
+    background: #151515;
+    color: white;
+    font-size: 15px;
     outline: none;
 }
 
-.url-box input:focus {
-    border-color: #666;
-}
-
-.url-box button {
-    flex-shrink: 0;
-
-    height: 44px;
-    padding: 0 20px;
-
+.input-box button {
+    width: 130px;
     border: none;
-    border-radius: 8px;
-
-    background: #fff;
-    color: #111;
-
-    cursor: pointer;
+    border-radius: 10px;
+    background: white;
+    color: black;
     font-weight: bold;
+    cursor: pointer;
 }
-
-.url-box button:hover {
-    background: #ddd;
-}
-
 
 /* =========================
-   VIDEO PLAYER
+Video Player
 ========================= */
 
 .video-container {
     position: relative;
-
-    width: 100%;
-    max-width: 100%;
-
-    margin: 0 auto;
-
+    background: #000;
+    border-radius: 14px;
     overflow: hidden;
-
-    background: #000;
-    border-radius: 10px;
+    box-shadow: 0 10px 50px rgba(0, 0, 0, .5);
 }
 
-
-/* =========================
-   VIDEO
-========================= */
-
-.video-container video {
-    display: block;
-
+video {
     width: 100%;
-    max-width: 100%;
-
-    height: auto;
-
-    background: #000;
-
-    outline: none;
-
-    transition: filter 0.15s ease;
+    display: block;
+    max-height: 650px;
+    background: black;
 }
 
-
 /* =========================
-   CONTROLS
+Player Controls
 ========================= */
 
 .player-controls {
-    position: relative;
-
-    display: flex;
-    align-items: center;
-    flex-wrap: wrap;
-
-    width: 100%;
-    min-height: 58px;
-
-    padding: 8px 12px;
-
-    gap: 8px;
-
-    background: #181818;
-
-    z-index: 10;
+    background: #111;
+    padding: 12px 15px;
 }
 
-
-/* =========================
-   PROGRESS BAR
-========================= */
-
-.progress-wrapper {
+.progress-container {
     width: 100%;
-    display: flex;
-    align-items: center;
 }
 
 #progress {
     width: 100%;
-    height: 5px;
-
-    margin: 0;
-
     cursor: pointer;
-
-    accent-color: #fff;
 }
 
-
-/* =========================
-   TIME
-========================= */
-
-.time {
+.time-row {
     display: flex;
-    align-items: center;
-
-    white-space: nowrap;
-
-    color: #ccc;
-    font-size: 13px;
-
-    min-width: 95px;
-}
-
-
-/* =========================
-   CONTROL BUTTONS
-========================= */
-
-.player-controls button {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-
-    min-width: 36px;
-    height: 36px;
-
-    padding: 0 8px;
-
-    border: none;
-    border-radius: 6px;
-
-    background: transparent;
-    color: #fff;
-
-    cursor: pointer;
-
-    font-size: 14px;
-}
-
-.player-controls button:hover {
-    background: #303030;
-}
-
-.player-controls button:active {
-    background: #3a3a3a;
-}
-
-
-/* =========================
-   VOLUME
-========================= */
-
-.volume-wrapper {
-    display: flex;
-    align-items: center;
+    justify-content: flex-start;
     gap: 6px;
+    direction: ltr;
+    color: #bbb;
+    font-size: 13px;
+    margin-top: 5px;
 }
 
-#volume {
-    width: 80px;
-
-    cursor: pointer;
-
-    accent-color: #fff;
+.buttons-row {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 8px;
+    direction: ltr;
+    flex-wrap: wrap;
 }
 
-
-/* =========================
-   SELECTS
-========================= */
-
-.player-controls select {
-    height: 34px;
-
-    padding: 0 8px;
-
-    border: 1px solid #333;
-    border-radius: 6px;
-
+.control-btn {
+    width: 42px;
+    height: 38px;
+    border: none;
+    border-radius: 8px;
     background: #222;
-    color: #fff;
-
+    color: white;
     cursor: pointer;
-
-    outline: none;
+    font-size: 17px;
 }
 
-.player-controls select:hover {
-    background: #2d2d2d;
+.control-btn:hover {
+    background: #333;
 }
 
-.player-controls select:focus {
-    border-color: #666;
+.play-btn {
+    font-size: 19px;
 }
 
+.volume-slider {
+    width: 90px;
+    cursor: pointer;
+}
 
-/* =========================
-   BRIGHTNESS PANEL
-========================= */
+.quality-select {
+    height: 38px;
+    border: none;
+    border-radius: 8px;
+    background: #222;
+    color: white;
+    padding: 0 10px;
+    cursor: pointer;
+}
 
 .brightness-panel {
-    position: absolute;
-
-    right: 20px;
-    bottom: 65px;
-
-    width: 220px;
-
-    padding: 15px;
-
-    border: 1px solid #333;
-    border-radius: 10px;
-
-    background: rgba(20, 20, 20, 0.96);
-
-    box-shadow: 0 5px 25px rgba(0, 0, 0, 0.4);
-
-    z-index: 20;
-}
-
-.brightness-panel.hidden {
     display: none;
+    align-items: center;
+    gap: 10px;
+    margin-top: 12px;
+    padding: 10px;
+    background: #1b1b1b;
+    border-radius: 8px;
+    color: #ccc;
 }
 
-.brightness-panel label {
+.brightness-panel.show {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
-
-    margin-bottom: 10px;
-
-    font-size: 13px;
-    color: #ddd;
 }
 
 #brightness {
-    width: 100%;
-
-    cursor: pointer;
-
-    accent-color: #fff;
+    width: 150px;
 }
 
-#brightnessValue {
-    color: #aaa;
-}
-
-
-/* =========================
-   STATUS
-========================= */
-
-#status {
-    width: 100%;
-    max-width: 1000px;
-
-    margin: 10px auto 0;
-
-    color: #aaa;
-
-    font-size: 13px;
+.status {
     text-align: center;
+    color: #777;
+    font-size: 13px;
+    margin-top: 10px;
 }
 
-#status.error {
-    color: #ff6b6b;
-}
-
-#status.success {
-    color: #7ee787;
-}
-
-
-/* =========================
-   FULLSCREEN
-========================= */
+/* =================================================
+FULLSCREEN
+کنترل‌ها روی خود تصویر قرار می‌گیرند
+================================================= */
 
 .video-container:fullscreen {
     width: 100vw;
     height: 100vh;
 
-    max-width: none;
+    background: #000;
 
-    margin: 0;
+    border-radius: 0;
 
     display: flex;
     align-items: center;
     justify-content: center;
 
-    background: #000;
-
-    border-radius: 0;
 }
 
-
-/* Video in fullscreen */
+/*
+خود ویدئو در Fullscreen کوچک نمی‌شود.
+تصویر با حفظ نسبت خودش نمایش داده می‌شود.
+*/
 
 .video-container:fullscreen video {
     width: 100%;
     height: 100%;
 
-    max-width: none;
+
+    max-height: none;
 
     object-fit: contain;
 
     background: #000;
+
+
 }
 
-
-/* =========================
-   FULLSCREEN CONTROLS
-========================= */
+/*
+کنترل‌ها روی تصویر قرار می‌گیرند
+*/
 
 .video-container:fullscreen .player-controls {
     position: absolute;
+
 
     left: 0;
     right: 0;
     bottom: 0;
 
-    width: 100%;
+    z-index: 20;
 
-    display: flex;
+    padding: 25px 25px 18px;
 
-    padding: 45px 18px 15px;
-
-    background:
-        linear-gradient(
-            to top,
-            rgba(0, 0, 0, 0.85),
-            rgba(0, 0, 0, 0.45),
-            transparent
-        );
+    background: linear-gradient(to top,
+            rgba(0, 0, 0, .85),
+            rgba(0, 0, 0, .45),
+            transparent);
 
     transition:
-        opacity 0.25s ease,
-        transform 0.25s ease;
+        opacity .3s ease,
+        transform .3s ease;
 
-    z-index: 100;
+    opacity: 1;
+
+
 }
 
+/*
+وقتی کنترل‌ها مخفی هستند
+*/
 
-/* =========================
-   HIDE FULLSCREEN CONTROLS
-========================= */
-
-.video-container.controls-hidden .player-controls {
+.video-container:fullscreen.controls-hidden .player-controls {
     opacity: 0;
+
 
     transform: translateY(100%);
 
     pointer-events: none;
+
+
 }
 
+/*
+وضعیت پخش در Fullscreen مخفی شود
+*/
 
-/* =========================
-   FULLSCREEN STATUS
-========================= */
-
-.video-container:fullscreen #status {
+.video-container:fullscreen .status {
     display: none;
 }
 
-
-/* =========================
-   FULLSCREEN BRIGHTNESS
-========================= */
+/*
+پنل روشنایی روی تصویر
+*/
 
 .video-container:fullscreen .brightness-panel {
+    position: absolute;
+
+
     bottom: 85px;
-    right: 20px;
-}
+    right: 25px;
 
+    z-index: 30;
+
+    background: rgba(20, 20, 20, .75);
+
+    backdrop-filter: blur(10px);
+
+    border: 1px solid rgba(255, 255, 255, .1);
+
+
+}
 
 /* =========================
-   RANGE INPUTS
+موبایل
 ========================= */
 
-input[type="range"] {
-    appearance: none;
-    -webkit-appearance: none;
+@media (max-width: 600px) {
 
-    background: transparent;
-}
-
-input[type="range"]::-webkit-slider-runnable-track {
-    height: 4px;
-
-    border-radius: 10px;
-
-    background: #555;
-}
-
-input[type="range"]::-webkit-slider-thumb {
-    appearance: none;
-    -webkit-appearance: none;
-
-    width: 13px;
-    height: 13px;
-
-    margin-top: -4.5px;
-
-    border-radius: 50%;
-    border: none;
-
-    background: #fff;
-
-    cursor: pointer;
-}
-
-input[type="range"]::-moz-range-track {
-    height: 4px;
-
-    border-radius: 10px;
-
-    background: #555;
-}
-
-input[type="range"]::-moz-range-thumb {
-    width: 13px;
-    height: 13px;
-
-    border: none;
-    border-radius: 50%;
-
-    background: #fff;
-
-    cursor: pointer;
-}
-
-
-/* =========================
-   PROGRESS BIGGER
-========================= */
-
-#progress {
-    height: 6px;
-}
-
-#progress::-webkit-slider-runnable-track {
-    height: 6px;
-}
-
-#progress::-webkit-slider-thumb {
-    width: 14px;
-    height: 14px;
-
-    margin-top: -4px;
-}
-
-#progress::-moz-range-track {
-    height: 6px;
-}
-
-#progress::-moz-range-thumb {
-    width: 14px;
-    height: 14px;
-}
-
-
-/* =========================
-   MOBILE
-========================= */
-
-@media (max-width: 768px) {
 
     main {
-        padding: 10px;
+        padding: 25px 10px;
     }
 
-    h1 {
-        font-size: 22px;
-        margin-bottom: 14px;
+    .hero h1 {
+        font-size: 30px;
     }
 
-    .url-box {
+    .input-box {
         flex-direction: column;
-        gap: 8px;
     }
 
-    .url-box input {
+    .input-box button {
         width: 100%;
+        height: 50px;
     }
 
-    .url-box button {
-        width: 100%;
-    }
-
-    .video-container {
-        width: 100%;
-        border-radius: 6px;
-    }
-
-    .player-controls {
+    .buttons-row {
         gap: 5px;
-        padding: 7px;
-
-        min-height: 52px;
     }
 
-    .player-controls button {
-        min-width: 34px;
-        height: 34px;
-
-        padding: 0 5px;
+    .control-btn {
+        width: 38px;
+        height: 36px;
     }
 
-    .time {
-        font-size: 12px;
-        min-width: auto;
+    .volume-slider {
+        width: 70px;
     }
-
-    #volume {
-        width: 60px;
-    }
-
-    .player-controls select {
-        height: 32px;
-        font-size: 12px;
-
-        padding: 0 5px;
-    }
-
-    .brightness-panel {
-        right: 10px;
-        bottom: 60px;
-
-        width: 190px;
-    }
-}
-
-
-/* =========================
-   SMALL MOBILE
-========================= */
-
-@media (max-width: 480px) {
-
-    main {
-        padding: 6px;
-    }
-
-    h1 {
-        font-size: 20px;
-    }
-
-    .video-container {
-        border-radius: 4px;
-    }
-
-    .player-controls {
-        padding: 6px;
-
-        gap: 3px;
-    }
-
-    .player-controls button {
-        min-width: 32px;
-        height: 32px;
-
-        font-size: 13px;
-    }
-
-    .time {
-        font-size: 11px;
-    }
-
-    #volume {
-        width: 50px;
-    }
-
-    .player-controls select {
-        max-width: 75px;
-
-        font-size: 11px;
-    }
-}
-
-
-/* =========================
-   FULLSCREEN MOBILE
-========================= */
-
-@media (max-width: 768px) {
 
     .video-container:fullscreen .player-controls {
-        padding:
-            35px
-            8px
-            10px;
+        padding: 20px 10px 12px;
     }
 
-    .video-container:fullscreen .player-controls select {
-        max-width: 80px;
-    }
 
-    .video-container:fullscreen .brightness-panel {
-        right: 10px;
-        bottom: 75px;
-    }
-}
-
-
-/* =========================
-   TOUCH DEVICES
-========================= */
-
-@media (hover: none) {
-
-    .player-controls button:hover {
-        background: transparent;
-    }
-
-    .player-controls button:active {
-        background: #303030;
-    }
 }
