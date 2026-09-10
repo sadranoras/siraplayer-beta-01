@@ -1,7 +1,7 @@
 {
   "name": "streamly",
   "version": "1.0.0",
-  "description": "Simple video streaming service",
+  "description": "Video streaming service",
   "main": "server.js",
   "scripts": {
     "start": "node server.js"
