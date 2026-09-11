@@ -152,6 +152,9 @@ async function loadVideo() {
     video.src =
         `${API_BASE}/api/proxy?url=${encodeURIComponent(videoUrl)}`;
 
+    video.addEventListener("loadedmetadata", () => {
+    setStatus("ویدئو آماده پخش است", "success");
+}, { once: true });
 
     // تنظیمات اولیه
     video.playbackRate = 1;
@@ -178,11 +181,12 @@ async function loadVideo() {
 
 
     // خطا
-    video.addEventListener(
-        "error",
-        handleVideoError,
-        { once: true }
+    video.addEventListener("error", () => {
+    setStatus(
+        "❌ ویدئو قابل پخش نیست. ممکن است لینک منقضی شده باشد یا سرور اجازه پخش مستقیم ندهد.",
+        "error"
     );
+});
 
 
     try {
