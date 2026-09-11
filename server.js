@@ -11,7 +11,10 @@ const PORT = process.env.PORT || 10000;
 
 app.use((req, res, next) => {
     res.setHeader("Access-Control-Allow-Origin", "*");
-    res.setHeader("Access-Control-Allow-Methods", "GET, OPTIONS");
+    res.setHeader(
+        "Access-Control-Allow-Methods",
+        "GET, OPTIONS"
+    );
     res.setHeader(
         "Access-Control-Allow-Headers",
         "Range, Content-Type"
@@ -28,7 +31,6 @@ app.use((req, res, next) => {
     next();
 });
 
-
 // =========================
 // HEALTH CHECK
 // =========================
@@ -40,7 +42,6 @@ app.get("/", (req, res) => {
     });
 });
 
-
 // =========================
 // VIDEO PROXY
 // =========================
@@ -48,6 +49,10 @@ app.get("/", (req, res) => {
 app.get("/api/proxy", async (req, res) => {
     try {
         const videoUrl = req.query.url;
+
+        // -------------------------
+        // Check URL
+        // -------------------------
 
         if (!videoUrl) {
             return res.status(400).json({
@@ -65,51 +70,108 @@ app.get("/api/proxy", async (req, res) => {
             });
         }
 
-        // فقط HTTP و HTTPS
+        // Only HTTP / HTTPS
         if (!["http:", "https:"].includes(target.protocol)) {
             return res.status(400).json({
                 error: "Only HTTP/HTTPS URLs are allowed"
             });
         }
 
-        // فعلاً فقط MP4
-        if (!target.pathname.toLowerCase().endsWith(".mp4")) {
-            return res.status(400).json({
-                error: "Only direct MP4 files are supported"
-            });
-        }
+        // -------------------------
+        // Request headers
+        // -------------------------
 
         const headers = {
-            "User-Agent": "Streamly/1.0"
+            "User-Agent":
+                "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+            "Accept":
+                "video/mp4,video/*;q=0.9,*/*;q=0.8"
         };
 
-        // ارسال Range برای Seek و Streaming
+        // IMPORTANT:
+        // Forward browser Range requests.
+        // This allows seeking inside the video.
+
         if (req.headers.range) {
             headers.Range = req.headers.range;
         }
 
+        // -------------------------
+        // Fetch source
+        // -------------------------
+
         const response = await fetch(target.toString(), {
             method: "GET",
-            headers
+            headers,
+            redirect: "follow"
         });
+
+        // -------------------------
+        // Source response check
+        // -------------------------
 
         if (!response.ok && response.status !== 206) {
             return res.status(response.status).json({
-                error: `Source server returned ${response.status}`
+                error:
+                    `Source server returned ${response.status}`
             });
         }
 
-        res.status(response.status);
-
+        // -------------------------
         // Content-Type
+        // -------------------------
+
         const contentType =
             response.headers.get("content-type") ||
-            "video/mp4";
+            "";
 
-        res.setHeader("Content-Type", contentType);
+        // Some servers return:
+        //
+        // video/mp4
+        // video/mp4; charset=UTF-8
+        //
+        // So we only inspect the beginning.
 
-        // Range support
-        res.setHeader("Accept-Ranges", "bytes");
+        const isMp4 =
+            contentType
+                .toLowerCase()
+                .split(";")[0]
+                .trim() === "video/mp4";
+
+        // -------------------------
+        // Allow MP4
+        // -------------------------
+
+        if (!isMp4) {
+            return res.status(415).json({
+                error:
+                    "Source is not an MP4 video",
+                contentType:
+                    contentType || "unknown"
+            });
+        }
+
+        // -------------------------
+        // Response status
+        // -------------------------
+
+        res.status(response.status);
+
+        // -------------------------
+        // Video headers
+        // -------------------------
+
+        res.setHeader(
+            "Content-Type",
+            contentType
+        );
+
+        res.setHeader(
+            "Accept-Ranges",
+            "bytes"
+        );
+
+        // Content-Length
 
         const contentLength =
             response.headers.get("content-length");
@@ -121,6 +183,8 @@ app.get("/api/proxy", async (req, res) => {
             );
         }
 
+        // Content-Range
+
         const contentRange =
             response.headers.get("content-range");
 
@@ -130,6 +194,8 @@ app.get("/api/proxy", async (req, res) => {
                 contentRange
             );
         }
+
+        // Cache-Control
 
         const cacheControl =
             response.headers.get("cache-control");
@@ -141,33 +207,45 @@ app.get("/api/proxy", async (req, res) => {
             );
         }
 
+        // -------------------------
+        // Stream video
+        // -------------------------
+
         if (!response.body) {
             return res.end();
         }
 
-        // Stream source → user
         Readable
             .fromWeb(response.body)
             .pipe(res);
 
     } catch (error) {
-    console.error("Proxy error:", error);
+        console.error(
+            "Proxy error:",
+            error
+        );
 
-    if (!res.headersSent) {
-        res.status(500).json({
-            error: "Could not load video from source server"
-        });
+        if (!res.headersSent) {
+            return res.status(500).json({
+                error:
+                    "Could not load video from source server",
+                details:
+                    error.message
+            });
+        }
     }
-}
 });
-
 
 // =========================
 // START SERVER
 // =========================
 
-app.listen(PORT, "0.0.0.0", () => {
-    console.log(
-        `Streamly backend running on port ${PORT}`
-    );
-});
+app.listen(
+    PORT,
+    "0.0.0.0",
+    () => {
+        console.log(
+            `Streamly backend running on port ${PORT}`
+        );
+    }
+);
