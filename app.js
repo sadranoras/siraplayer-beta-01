@@ -9,6 +9,8 @@
 
 const video = document.getElementById("video");
 
+const API_BASE = "https://siraplayer-beta-01.onrender.com";
+
 const input = document.getElementById("videoUrl");
 const loadBtn = document.getElementById("loadBtn");
 
@@ -138,12 +140,17 @@ async function loadVideo() {
 
 
     // ساخت URL پروکسی
-    const proxyUrl =
-        "/api/proxy?url=" +
-        encodeURIComponent(url);
+    // const proxyUrl =
+    //     "/api/proxy?url=" +
+    //     encodeURIComponent(url);
 
 
-    video.src = proxyUrl;
+    // video.src = proxyUrl;
+
+    const API_BASE = "https://siraplayer-beta-01.onrender.com";
+
+    video.src =
+        `${API_BASE}/api/proxy?url=${encodeURIComponent(videoUrl)}`;
 
 
     // تنظیمات اولیه
