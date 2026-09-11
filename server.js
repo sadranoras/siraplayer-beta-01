@@ -46,17 +46,18 @@ app.get("/", (req, res) => {
 // VIDEO PROXY
 // =========================
 
+// =========================
+// VIDEO PROXY
+// =========================
+
 app.get("/api/proxy", async (req, res) => {
     try {
         const videoUrl = req.query.url;
 
-        // -------------------------
-        // Check URL
-        // -------------------------
-
         if (!videoUrl) {
             return res.status(400).json({
-                error: "Video URL is required"
+                error: "VIDEO_URL_REQUIRED",
+                message: "Video URL is required"
             });
         }
 
@@ -66,20 +67,17 @@ app.get("/api/proxy", async (req, res) => {
             target = new URL(videoUrl);
         } catch {
             return res.status(400).json({
-                error: "Invalid URL"
+                error: "INVALID_URL",
+                message: "The video URL is invalid"
             });
         }
 
-        // Only HTTP / HTTPS
         if (!["http:", "https:"].includes(target.protocol)) {
             return res.status(400).json({
-                error: "Only HTTP/HTTPS URLs are allowed"
+                error: "INVALID_PROTOCOL",
+                message: "Only HTTP and HTTPS URLs are supported"
             });
         }
-
-        // -------------------------
-        // Request headers
-        // -------------------------
 
         const headers = {
             "User-Agent":
@@ -88,17 +86,9 @@ app.get("/api/proxy", async (req, res) => {
                 "video/mp4,video/*;q=0.9,*/*;q=0.8"
         };
 
-        // IMPORTANT:
-        // Forward browser Range requests.
-        // This allows seeking inside the video.
-
         if (req.headers.range) {
             headers.Range = req.headers.range;
         }
-
-        // -------------------------
-        // Fetch source
-        // -------------------------
 
         const response = await fetch(target.toString(), {
             method: "GET",
@@ -106,60 +96,79 @@ app.get("/api/proxy", async (req, res) => {
             redirect: "follow"
         });
 
-        // -------------------------
-        // Source response check
-        // -------------------------
+        // =========================
+        // HTTP ERROR HANDLING
+        // =========================
 
         if (!response.ok && response.status !== 206) {
+
+            if (response.status === 401) {
+                return res.status(401).json({
+                    error: "UNAUTHORIZED",
+                    message:
+                        "This video requires authorization"
+                });
+            }
+
+            if (response.status === 403) {
+                return res.status(403).json({
+                    error: "FORBIDDEN",
+                    message:
+                        "The source server does not allow access to this video"
+                });
+            }
+
+            if (response.status === 404) {
+                return res.status(404).json({
+                    error: "NOT_FOUND",
+                    message:
+                        "The video could not be found"
+                });
+            }
+
+            if (response.status >= 500) {
+                return res.status(502).json({
+                    error: "SOURCE_SERVER_ERROR",
+                    message:
+                        "The video source server is currently unavailable"
+                });
+            }
+
             return res.status(response.status).json({
-                error:
-                    `Source server returned ${response.status}`
+                error: "SOURCE_ERROR",
+                message:
+                    `Source server returned HTTP ${response.status}`
             });
         }
 
-        // -------------------------
-        // Content-Type
-        // -------------------------
+        // =========================
+        // CONTENT TYPE
+        // =========================
 
         const contentType =
-            response.headers.get("content-type") ||
-            "";
+            response.headers.get("content-type") || "";
 
-        // Some servers return:
-        //
-        // video/mp4
-        // video/mp4; charset=UTF-8
-        //
-        // So we only inspect the beginning.
-
-        const isMp4 =
+        const mimeType =
             contentType
                 .toLowerCase()
                 .split(";")[0]
-                .trim() === "video/mp4";
+                .trim();
 
-        // -------------------------
-        // Allow MP4
-        // -------------------------
-
-        if (!isMp4) {
+        if (mimeType !== "video/mp4") {
             return res.status(415).json({
-                error:
-                    "Source is not an MP4 video",
+                error: "NOT_MP4",
+                message:
+                    "The provided URL does not point to an MP4 video",
                 contentType:
                     contentType || "unknown"
             });
         }
 
-        // -------------------------
-        // Response status
-        // -------------------------
+        // =========================
+        // RESPONSE HEADERS
+        // =========================
 
         res.status(response.status);
-
-        // -------------------------
-        // Video headers
-        // -------------------------
 
         res.setHeader(
             "Content-Type",
@@ -171,8 +180,6 @@ app.get("/api/proxy", async (req, res) => {
             "bytes"
         );
 
-        // Content-Length
-
         const contentLength =
             response.headers.get("content-length");
 
@@ -182,8 +189,6 @@ app.get("/api/proxy", async (req, res) => {
                 contentLength
             );
         }
-
-        // Content-Range
 
         const contentRange =
             response.headers.get("content-range");
@@ -195,8 +200,6 @@ app.get("/api/proxy", async (req, res) => {
             );
         }
 
-        // Cache-Control
-
         const cacheControl =
             response.headers.get("cache-control");
 
@@ -207,12 +210,16 @@ app.get("/api/proxy", async (req, res) => {
             );
         }
 
-        // -------------------------
-        // Stream video
-        // -------------------------
+        // =========================
+        // STREAM
+        // =========================
 
         if (!response.body) {
-            return res.end();
+            return res.status(502).json({
+                error: "EMPTY_RESPONSE",
+                message:
+                    "The video source returned an empty response"
+            });
         }
 
         Readable
@@ -226,11 +233,10 @@ app.get("/api/proxy", async (req, res) => {
         );
 
         if (!res.headersSent) {
-            return res.status(500).json({
-                error:
-                    "Could not load video from source server",
-                details:
-                    error.message
+            return res.status(502).json({
+                error: "PROXY_ERROR",
+                message:
+                    "Could not connect to the video source"
             });
         }
     }
