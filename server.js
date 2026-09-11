@@ -151,14 +151,14 @@ app.get("/api/proxy", async (req, res) => {
             .pipe(res);
 
     } catch (error) {
-        console.error("Proxy error:", error);
+    console.error("Proxy error:", error);
 
-        if (!res.headersSent) {
-            res.status(500).json({
-                error: "Could not load video from source server"
-            });
-        }
+    if (!res.headersSent) {
+        res.status(500).json({
+            error: "Could not load video from source server"
+        });
     }
+}
 });
 
 
